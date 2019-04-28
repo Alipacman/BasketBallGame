@@ -99,8 +99,8 @@
 				D6BCFC9E22650502000E4702 /* GameScene.swift */,
 				D6BF27662261FCB200EBB8EF /* GameViewController.swift */,
 				D6BF27622261FCB200EBB8EF /* Actions.sks */,
-				D6BF27682261FCB200EBB8EF /* Main.storyboard */,
 				D6BF276B2261FCB300EBB8EF /* Assets.xcassets */,
+				D6BF27682261FCB200EBB8EF /* Main.storyboard */,
 				D6BF276D2261FCB300EBB8EF /* LaunchScreen.storyboard */,
 				D6BF27702261FCB300EBB8EF /* Info.plist */,
 			);

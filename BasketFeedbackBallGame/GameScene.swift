@@ -38,87 +38,57 @@ struct c {  // Constants
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    // Variables
-    var grids = false   // turn on to see all the physics grid lines
+    // MARK:-Properties
+    var grids = true   // turn on to see all the physics grid lines
     
-    // SKSprites
     var bg = SKSpriteNode(imageNamed: "background")            // background image
     var pBall = SKSpriteNode(imageNamed: "basketball")  // Paper Ball skin
     
-    //baskets
-    var leftBasket: Basket
-    var middleBasket: Basket
-    var rightBasket: Basket
-   
-    //SKShapes
+    var leftBasket: Basket?
+    var middleBasket: Basket?
+    var rightBasket: Basket?
+    
+    var pi = Double.pi
+    var touchingBall = false
+    
     var ball = SKShapeNode()
     var startG = SKShapeNode()  // Where the paper ball will start
-    
-    override init() {
-        leftBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        middleBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        rightBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        super.init()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        leftBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        middleBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        rightBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        super.init(coder: aDecoder)
-    }
-    
-    // CGFloats
-    var pi = Double.pi
-    
-    var touchingBall = false
     
     // Did Move To View - The GameViewController.swift has now displayed GameScene.swift and will instantly run this function.
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         
-        if UIDevice.current.userInterfaceIdiom == .phone {
             c.grav = -6
             c.yVel = self.frame.height / 4
             c.airTime = 1.5
-        }else{
-            // iPad
-        }
         
         physicsWorld.gravity = CGVector(dx: 0, dy: c.grav)
-        
+        setupBaskets()
         setUpGame()
     }
     
+    //MARK:- Setup
     private func setupBaskets() {
-        leftBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        middleBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-        rightBasket = Basket(pc: pc.basket, colliderPc: pc.ball, grid: false, zPosition: bg.zPosition + 1)
-    }
-    
-    // Fires the instant a touch has made contact with the screen
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let location = touch.location(in: self)
-            if GameState.current == .playing {
-                if ball.contains(location){
-                    t.start = location
-                    touchingBall = true
-                }
-            }
-        }
-    }
-    
-    // Fires as soon as the touch leaves the screen
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let location = touch.location(in: self)
-            if GameState.current == .playing && !ball.contains(location) && touchingBall{
-                t.end = location
-                touchingBall = false
-                fire()
-            }
-        }
+        leftBasket = Basket(positionData: BasketPositionData.left,
+                            pc: pc.basket,
+                            colliderPc: pc.ball,
+                            grid: grids,
+                            zPosition: 2,
+                            size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
+        
+        middleBasket = Basket(positionData: BasketPositionData.mid,
+                              pc: pc.basket,
+                              colliderPc: pc.ball,
+                              grid: grids,
+                              zPosition: 2,
+                              size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
+        
+        rightBasket = Basket(positionData: BasketPositionData.right,
+                             pc: pc.basket,
+                             colliderPc: pc.ball,
+                             grid: grids,
+                             zPosition: 2,
+                             size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
     }
     
     // Set the images and physics properties of the GameScene
@@ -151,9 +121,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startG.physicsBody?.isDynamic = false
         self.addChild(startG)
         
-        leftBasket.position = CGPoint(x: 0, y: self.frame.height / 3)
-        middleBasket.position = CGPoint(x: leftBasket.frame.width, y: self.frame.height / 3)
-        rightBasket.position = CGPoint(x: leftBasket.frame.width * 2, y: self.frame.height / 3)
+        self.addChild(leftBasket!)
+        self.addChild(middleBasket!)
+        self.addChild(rightBasket!)
+        
+        let xVal = leftBasket!.frame.width - leftBasket!.frame.width / 2
+        
+        leftBasket!.position = CGPoint(x: xVal , y: self.frame.height / 3)
+        middleBasket!.position = CGPoint(x: xVal * 3, y: self.frame.height / 3)
+        rightBasket!.position = CGPoint(x: xVal * 5, y: self.frame.height / 3)
         
         setBall()
     }
@@ -168,18 +144,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.setScale(1)
         
         // Set up ball
-        ball = SKShapeNode(circleOfRadius: self.view!.frame.width / 5)
+        ball = SKShapeNode(circleOfRadius: self.view!.frame.width / 9)
         ball.fillColor = grids ? .blue : .clear
         ball.strokeColor = .clear
         ball.position = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
-        ball.zPosition = 10
+        ball.zPosition = 1
         
         // Add "paper skin" to the circle shape
         pBall.size = ball.frame.size
         ball.addChild(pBall)
         
         // Set up the balls physics properties
-        ball.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "paperBallImage"), size: pBall.size)
+        ball.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "basketball"), size: pBall.size)
         ball.physicsBody?.categoryBitMask = pc.ball
         ball.physicsBody?.collisionBitMask = pc.sG
         ball.physicsBody?.contactTestBitMask = pc.basket
@@ -188,7 +164,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(ball)
     }
     
-    // When touches ended this is called to shoot the paper ball
+    //MARK:- Touches
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            if GameState.current == .playing {
+                if ball.contains(location){
+                    t.start = location
+                    touchingBall = true
+                }
+            }
+        }
+    }
+    
+    // Fires as soon as the touch leaves the screen
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            if GameState.current == .playing && !ball.contains(location) && touchingBall{
+                t.end = location
+                touchingBall = false
+                fire()
+            }
+        }
+    }
+    
+    //MARK:-
     func fire() {
         
         let xChange = t.end.x - t.start.x
