@@ -79,7 +79,7 @@ class Basket: SKSpriteNode {
         back.zPosition = self.zPosition
         self.addChild(back)
         
-        front.zPosition = self.zPosition + 3
+        front.zPosition = self.zPosition
         //self.addChild(front)
         
         // Left Wall of the bin1

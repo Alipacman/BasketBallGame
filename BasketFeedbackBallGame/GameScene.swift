@@ -76,6 +76,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0, dy: c.grav)
         setupBaskets()
         setupGame()
+        setupBall()
         setupEmojiView()
         setupQuestionLabel()
     }
@@ -109,10 +110,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         GameState.current = .playing
         
         // Background
-        let bgScale = CGFloat(bg.frame.width / bg.frame.height) // eg. 1.4 as a scale
-        
         bg.size.height = self.frame.height
-        bg.size.width = bg.size.height * bgScale
+        bg.size.width = self.frame.width
         bg.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         bg.zPosition = 0
         self.addChild(bg)
@@ -144,11 +143,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         middleBasket!.position = CGPoint(x: xVal * 3, y: self.frame.height / 2.3)
         rightBasket!.position = CGPoint(x: xVal * 5, y: self.frame.height / 2.3)
         
-        setBall()
     }
     
     // Set up the ball. This will be called to reset the ball too
-    func setBall() {
+    func setupBall() {
         
         // Remove and reset incase the ball was previously thrown
         pBall.removeFromParent()
@@ -157,11 +155,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.setScale(1)
         
         // Set up ball
-        ball = SKShapeNode(circleOfRadius: self.view!.frame.width / 9)
+        ball = SKShapeNode(circleOfRadius: self.view!.frame.width / 8.5)
         ball.fillColor = grids ? .blue : .clear
         ball.strokeColor = .clear
         ball.position = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
-        ball.zPosition = 1
+        ball.zPosition = 2
         
         // Add "paper skin" to the circle shape
         pBall.size = ball.frame.size
@@ -231,7 +229,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let wait = SKAction.wait(forDuration: c.airTime / 2)
         let changeCollision = SKAction.run({
             self.ball.physicsBody?.collisionBitMask = pc.sG | pc.basket
-            self.ball.zPosition = self.bg.zPosition + 1
+            self.ball.zPosition = 1
         })
         
         self.run(SKAction.sequence([wait,changeCollision]))
@@ -239,7 +237,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Wait & reset
         let wait4 = SKAction.wait(forDuration: 2.5)
         let reset = SKAction.run({
-            self.setBall()
+            self.setupBall()
         })
         self.run(SKAction.sequence([wait4,reset]))
     }
