@@ -39,7 +39,7 @@ struct c {  // Constants
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK:-Properties
-    var grids = true   // turn on to see all the physics grid lines
+    var grids = false   // turn on to see all the physics grid lines
     
     var bg = SKSpriteNode(imageNamed: "background")            // background image
     var pBall = SKSpriteNode(imageNamed: "basketball")  // Paper Ball skin
@@ -49,10 +49,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rightBasket: Basket?
     
     var pi = Double.pi
-    var touchingBall = false
+    var touchingBall = true
     
     var ball = SKShapeNode()
     var startG = SKShapeNode()  // Where the paper ball will start
+    
+    let emojiView = EmojiView(frame: .zero)
+    let questionLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = .white
+        label.font = UIFont(name: "PingFang HK", size: 22)
+        label.text = "Do you like the design\n of the app?"
+        return label
+    }()
     
     // Did Move To View - The GameViewController.swift has now displayed GameScene.swift and will instantly run this function.
     override func didMove(to view: SKView) {
@@ -64,7 +75,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.gravity = CGVector(dx: 0, dy: c.grav)
         setupBaskets()
-        setUpGame()
+        setupGame()
+        setupEmojiView()
+        setupQuestionLabel()
     }
     
     //MARK:- Setup
@@ -92,7 +105,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // Set the images and physics properties of the GameScene
-    func setUpGame() {
+    func setupGame() {
         GameState.current = .playing
         
         // Background
@@ -127,9 +140,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let xVal = leftBasket!.frame.width - leftBasket!.frame.width / 2
         
-        leftBasket!.position = CGPoint(x: xVal , y: self.frame.height / 3)
-        middleBasket!.position = CGPoint(x: xVal * 3, y: self.frame.height / 3)
-        rightBasket!.position = CGPoint(x: xVal * 5, y: self.frame.height / 3)
+        leftBasket!.position = CGPoint(x: xVal , y: self.frame.height / 2.3)
+        middleBasket!.position = CGPoint(x: xVal * 3, y: self.frame.height / 2.3)
+        rightBasket!.position = CGPoint(x: xVal * 5, y: self.frame.height / 2.3)
         
         setBall()
     }
@@ -162,6 +175,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.affectedByGravity = true
         ball.physicsBody?.isDynamic = true
         self.addChild(ball)
+    }
+    
+    private func setupEmojiView() {
+        self.view?.addSubview(emojiView)
+        emojiView.frame = CGRect(x: 0, y: self.frame.height / 3, width: self.view?.frame.width ?? 0, height: 50)
+    }
+    
+    private func setupQuestionLabel() {
+        self.view?.addSubview(questionLabel)
+        let width = (self.view?.frame.width)! - 32
+        questionLabel.frame = CGRect(x: 16, y: self.frame.height / 8, width: width , height: 100)
     }
     
     //MARK:- Touches
@@ -207,13 +231,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let wait = SKAction.wait(forDuration: c.airTime / 2)
         let changeCollision = SKAction.run({
             self.ball.physicsBody?.collisionBitMask = pc.sG | pc.basket
-            self.ball.zPosition = self.bg.zPosition + 2
+            self.ball.zPosition = self.bg.zPosition + 1
         })
         
         self.run(SKAction.sequence([wait,changeCollision]))
         
         // Wait & reset
-        let wait4 = SKAction.wait(forDuration: 4)
+        let wait4 = SKAction.wait(forDuration: 2.5)
         let reset = SKAction.run({
             self.setBall()
         })

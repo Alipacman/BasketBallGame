@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D66DA8012275F528004808AB /* Basket.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66DA8002275F528004808AB /* Basket.swift */; };
+		D6A3EBD9227A0289009A5F60 /* EmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A3EBD8227A0289009A5F60 /* EmojiView.swift */; };
 		D6BCFC9F22650502000E4702 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BCFC9E22650502000E4702 /* GameScene.swift */; };
 		D6BF275F2261FCB200EBB8EF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BF275E2261FCB200EBB8EF /* AppDelegate.swift */; };
 		D6BF27632261FCB200EBB8EF /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = D6BF27622261FCB200EBB8EF /* Actions.sks */; };
@@ -31,6 +32,7 @@
 
 /* Begin PBXFileReference section */
 		D66DA8002275F528004808AB /* Basket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Basket.swift; sourceTree = "<group>"; };
+		D6A3EBD8227A0289009A5F60 /* EmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiView.swift; sourceTree = "<group>"; };
 		D6BCFC9E22650502000E4702 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		D6BF275B2261FCB200EBB8EF /* BasketFeedbackBallGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasketFeedbackBallGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6BF275E2261FCB200EBB8EF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				D6BF275E2261FCB200EBB8EF /* AppDelegate.swift */,
 				D6BF27842261FD3300EBB8EF /* GameScene.sks */,
 				D6BCFC9E22650502000E4702 /* GameScene.swift */,
+				D6A3EBD8227A0289009A5F60 /* EmojiView.swift */,
 				D6BF27662261FCB200EBB8EF /* GameViewController.swift */,
 				D6BF27622261FCB200EBB8EF /* Actions.sks */,
 				D6BF276B2261FCB300EBB8EF /* Assets.xcassets */,
@@ -223,6 +226,7 @@
 				D66DA8012275F528004808AB /* Basket.swift in Sources */,
 				D6BF27672261FCB200EBB8EF /* GameViewController.swift in Sources */,
 				D6BF275F2261FCB200EBB8EF /* AppDelegate.swift in Sources */,
+				D6A3EBD9227A0289009A5F60 /* EmojiView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
