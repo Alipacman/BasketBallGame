@@ -61,6 +61,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ball = SKShapeNode()
     var startG = SKShapeNode()  // Where the paper ball will start
     
+    var userInteractionAreEnabled = false
+    
     let emojiView = EmojiView(frame: .zero)
     let questionLabel: UILabel = {
         let label = UILabel()
@@ -76,9 +78,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         
-            c.grav = -6
-            c.yVel = trowVelocity
-            c.airTime = 1.5
+        c.grav = -6
+        c.yVel = trowVelocity
+        c.airTime = 1.5
         
         physicsWorld.gravity = CGVector(dx: 0, dy: c.grav)
         setupBorder()
@@ -87,6 +89,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupBall()
         setupEmojiView()
         setupQuestionLabel()
+        enableUserInterAction(after: 5)
     }
     
     //MARK:- Setup
@@ -220,12 +223,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK:- Touches
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let location = touch.location(in: self)
-            if GameState.current == .playing {
-                if ball.contains(location){
-                    t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
-                    touchingBall = true
+        if userInteractionAreEnabled {
+            for touch in touches {
+                let location = touch.location(in: self)
+                if GameState.current == .playing {
+                    if ball.contains(location){
+                        t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
+                        touchingBall = true
+                    }
                 }
             }
         }
@@ -233,12 +238,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Fires as soon as the touch leaves the screen
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let location = touch.location(in: self)
-            if GameState.current == .playing && !ball.contains(location) && touchingBall{
-                setAccordingBasketAsEndPoint(with: location)
-                touchingBall = false
-                fire()
+        if userInteractionAreEnabled {
+            for touch in touches {
+                let location = touch.location(in: self)
+                if GameState.current == .playing && !ball.contains(location) && touchingBall{
+                    setAccordingBasketAsEndPoint(with: location)
+                    touchingBall = false
+                    fire()
+                }
             }
         }
     }
@@ -288,5 +295,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.setupBall()
         })
         self.run(SKAction.sequence([wait4,reset]))
+    }
+}
+
+extension GameScene {
+    private func enableUserInterAction(after seconds: Int) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(seconds), execute: {
+            self.userInteractionAreEnabled = true
+        })
     }
 }
