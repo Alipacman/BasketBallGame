@@ -41,10 +41,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK:-Properties
     var grids = false   // turn on to see all the physics grid lines
-    lazy var basketY = self.frame.height / 2.6
-    lazy var ballSize = self.view!.frame.width / 8.3
-    lazy var trowVelocity = self.frame.height / 4
+    var gameShrinkSize = CGFloat(0.7)
     
+    lazy var basketY = (self.frame.height / 2.4)
+    lazy var ballSize = (self.view!.frame.width / 8.3)
+    lazy var trowVelocity = (self.frame.height / 4)
+    
+    var transparentBorder = SKSpriteNode()
     var bg = SKSpriteNode(imageNamed: "background")            // background image
     var pBall = SKSpriteNode(imageNamed: "basketball")  // Paper Ball skin
     
@@ -78,6 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             c.airTime = 1.5
         
         physicsWorld.gravity = CGVector(dx: 0, dy: c.grav)
+        setupBorder()
         setupBaskets()
         setupGame()
         setupBall()
@@ -86,14 +90,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     //MARK:- Setup
+    private func setupBorder() {
+        
+        transparentBorder.color = SKColor(red: 0.0/255.0, green: 0.0/255.0, blue: 0.0/255.0, alpha: 0.6)
+        transparentBorder.size.height = self.frame.height
+        transparentBorder.size.width = self.frame.width
+        transparentBorder.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
+        self.addChild(transparentBorder)
+        
+    }
+    
     private func setupBaskets() {
+        let width = (self.frame.width / 3) * gameShrinkSize
+        let height = (self.frame.height / 5) * gameShrinkSize
+        
         leftBasket = Basket(positionData: BasketPositionData.left,
                             pcTop: pc.basketTop,
                             pcbasketWalls: pc.basketWalls,
                             colliderPc: pc.ball,
                             grid: grids,
                             zPosition: 2,
-                            size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
+                            size: CGSize(width: width, height: height))
         
         middleBasket = Basket(positionData: BasketPositionData.mid,
                               pcTop: pc.basketTop,
@@ -101,7 +118,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                               colliderPc: pc.ball,
                               grid: grids,
                               zPosition: 2,
-                              size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
+                              size: CGSize(width: width, height: height))
         
         rightBasket = Basket(positionData: BasketPositionData.right,
                              pcTop: pc.basketTop,
@@ -109,7 +126,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                              colliderPc: pc.ball,
                              grid: grids,
                              zPosition: 2,
-                             size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
+                             size: CGSize(width: width, height: height))
     }
     
     // Set the images and physics properties of the GameScene
@@ -117,8 +134,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         GameState.current = .playing
         
         // Background
-        bg.size.height = self.frame.height
-        bg.size.width = self.frame.width
+        bg.size.height = self.frame.height * gameShrinkSize
+        bg.size.width = self.frame.width * gameShrinkSize
         bg.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         bg.zPosition = 0
         self.addChild(bg)
@@ -128,7 +145,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startG = SKShapeNode(rectOf: CGSize(width: self.frame.width, height: 5))
         startG.fillColor = .red
         startG.strokeColor = .clear
-        startG.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 10)
+        startG.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 5)
         startG.zPosition = 10
         startG.alpha = grids ? 1 : 0
         
@@ -144,11 +161,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(middleBasket!)
         self.addChild(rightBasket!)
         
-        let xVal = leftBasket!.frame.width - leftBasket!.frame.width / 2
+        let offset = self.frame.width * (1 - gameShrinkSize)/2
+        let xVal = (leftBasket!.frame.width) - leftBasket!.frame.width / 2
         
-        leftBasket!.position = CGPoint(x: xVal , y: basketY)
-        middleBasket!.position = CGPoint(x: xVal * 3, y: basketY)
-        rightBasket!.position = CGPoint(x: xVal * 5, y: basketY)
+        leftBasket!.position = CGPoint(x: xVal + offset , y: basketY)
+        middleBasket!.position = CGPoint(x: xVal * 3 + offset, y: basketY)
+        rightBasket!.position = CGPoint(x: xVal * 5 + offset, y: basketY)
         
     }
     
@@ -162,7 +180,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.setScale(1)
         
         // Set up ball
-        ball = SKShapeNode(circleOfRadius: ballSize)
+        ball = SKShapeNode(circleOfRadius: ballSize * gameShrinkSize)
         ball.fillColor = grids ? .blue : .clear
         ball.strokeColor = .clear
         ball.position = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
@@ -183,14 +201,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupEmojiView() {
+        let width = (self.view?.frame.width ?? 0) * gameShrinkSize
+        let height = CGFloat(50)
+        let xOffset = self.frame.width * (1 - gameShrinkSize)/2
+        
         self.view?.addSubview(emojiView)
-        emojiView.frame = CGRect(x: 0, y: self.frame.height / 3, width: self.view?.frame.width ?? 0, height: 50)
+        emojiView.frame = CGRect(x: xOffset, y: self.frame.height / 2.8, width: width, height: height)
     }
     
     private func setupQuestionLabel() {
+        let width = ((self.view?.frame.width)! - 32) * gameShrinkSize
+        let height = CGFloat(100)
+        let xOffset = self.frame.width * (1 - gameShrinkSize)/2
+        
         self.view?.addSubview(questionLabel)
-        let width = (self.view?.frame.width)! - 32
-        questionLabel.frame = CGRect(x: 16, y: self.frame.height / 8, width: width , height: 100)
+        questionLabel.frame = CGRect(x: 8 + xOffset, y: self.frame.height / 6, width: width , height: height)
     }
     
     //MARK:- Touches
