@@ -19,7 +19,8 @@ enum GameState {
 struct pc { // Physics Category
     static let none: UInt32 = 0x1 << 0
     static let ball: UInt32 = 0x1 << 1
-    static let basket: UInt32 = 0x1 << 2
+    static let basketTop: UInt32 = 0x1 << 2
+    static let basketWalls: UInt32 = 0x1 << 4
     static let sG: UInt32 = 0x1 << 3 //startGround
 }
 
@@ -40,6 +41,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK:-Properties
     var grids = false   // turn on to see all the physics grid lines
+    lazy var basketY = self.frame.height / 2.6
+    lazy var ballSize = self.view!.frame.width / 8.3
+    lazy var trowVelocity = self.frame.height / 4
     
     var bg = SKSpriteNode(imageNamed: "background")            // background image
     var pBall = SKSpriteNode(imageNamed: "basketball")  // Paper Ball skin
@@ -70,7 +74,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
         
             c.grav = -6
-            c.yVel = self.frame.height / 4
+            c.yVel = trowVelocity
             c.airTime = 1.5
         
         physicsWorld.gravity = CGVector(dx: 0, dy: c.grav)
@@ -84,21 +88,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK:- Setup
     private func setupBaskets() {
         leftBasket = Basket(positionData: BasketPositionData.left,
-                            pc: pc.basket,
+                            pcTop: pc.basketTop,
+                            pcbasketWalls: pc.basketWalls,
                             colliderPc: pc.ball,
                             grid: grids,
                             zPosition: 2,
                             size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
         
         middleBasket = Basket(positionData: BasketPositionData.mid,
-                              pc: pc.basket,
+                              pcTop: pc.basketTop,
+                              pcbasketWalls: pc.basketWalls,
                               colliderPc: pc.ball,
                               grid: grids,
                               zPosition: 2,
                               size: CGSize(width: self.frame.width / 3, height: self.frame.height / 5))
         
         rightBasket = Basket(positionData: BasketPositionData.right,
-                             pc: pc.basket,
+                             pcTop: pc.basketTop,
+                             pcbasketWalls: pc.basketWalls,
                              colliderPc: pc.ball,
                              grid: grids,
                              zPosition: 2,
@@ -139,9 +146,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let xVal = leftBasket!.frame.width - leftBasket!.frame.width / 2
         
-        leftBasket!.position = CGPoint(x: xVal , y: self.frame.height / 2.3)
-        middleBasket!.position = CGPoint(x: xVal * 3, y: self.frame.height / 2.3)
-        rightBasket!.position = CGPoint(x: xVal * 5, y: self.frame.height / 2.3)
+        leftBasket!.position = CGPoint(x: xVal , y: basketY)
+        middleBasket!.position = CGPoint(x: xVal * 3, y: basketY)
+        rightBasket!.position = CGPoint(x: xVal * 5, y: basketY)
         
     }
     
@@ -155,11 +162,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.setScale(1)
         
         // Set up ball
-        ball = SKShapeNode(circleOfRadius: self.view!.frame.width / 8.5)
+        ball = SKShapeNode(circleOfRadius: ballSize)
         ball.fillColor = grids ? .blue : .clear
         ball.strokeColor = .clear
         ball.position = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
-        ball.zPosition = 2
+        ball.zPosition = 10
         
         // Add "paper skin" to the circle shape
         pBall.size = ball.frame.size
@@ -169,7 +176,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "basketball"), size: pBall.size)
         ball.physicsBody?.categoryBitMask = pc.ball
         ball.physicsBody?.collisionBitMask = pc.sG
-        ball.physicsBody?.contactTestBitMask = pc.basket
+        ball.physicsBody?.contactTestBitMask = pc.basketWalls
         ball.physicsBody?.affectedByGravity = true
         ball.physicsBody?.isDynamic = true
         self.addChild(ball)
@@ -192,7 +199,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let location = touch.location(in: self)
             if GameState.current == .playing {
                 if ball.contains(location){
-                    t.start = location
+                    t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
                     touchingBall = true
                 }
             }
@@ -204,7 +211,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for touch in touches {
             let location = touch.location(in: self)
             if GameState.current == .playing && !ball.contains(location) && touchingBall{
-                t.end = location
+                setAccordingBasketAsEndPoint(with: location)
                 touchingBall = false
                 fire()
             }
@@ -212,6 +219,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     //MARK:-
+    func setAccordingBasketAsEndPoint(with location: CGPoint) {
+        let thirdOfScreen = self.frame.width/3
+        let sixOfScreen = self.frame.width/6
+        switch location.x {
+        case 0...thirdOfScreen:
+            t.end = CGPoint(x: sixOfScreen*2, y: basketY)
+        case thirdOfScreen...thirdOfScreen*2:
+            t.end = CGPoint(x: sixOfScreen*3, y: basketY)
+        case thirdOfScreen*2...thirdOfScreen*3:
+            t.end = CGPoint(x: sixOfScreen*4, y: basketY)
+        default:
+            t.end = location
+        }
+        print(t.end)
+    }
+    
     func fire() {
         
         let xChange = t.end.x - t.start.x
@@ -223,13 +246,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.applyImpulse(throwVec, at: t.start)
         
         // Shrink
-        ball.run(SKAction.scale(by: 0.3, duration: c.airTime))
+        ball.run(SKAction.scale(by: 0.2, duration: c.airTime))
         
         // Change Collision Bitmask
         let wait = SKAction.wait(forDuration: c.airTime / 2)
         let changeCollision = SKAction.run({
-            self.ball.physicsBody?.collisionBitMask = pc.sG | pc.basket
-            self.ball.zPosition = 1
+            self.ball.physicsBody?.collisionBitMask = pc.basketWalls | pc.basketTop
+            self.ball.zPosition = 2
         })
         
         self.run(SKAction.sequence([wait,changeCollision]))

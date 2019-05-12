@@ -45,21 +45,29 @@ class Basket: SKSpriteNode {
     var rightWall = SKShapeNode()
     
     var base = SKShapeNode()
-    var front: SKSpriteNode
-    var back: SKSpriteNode
+    var body: SKSpriteNode
+    var top: SKSpriteNode
     
-    var pc: UInt32 = 0x1 << 0
+    var pcTop: UInt32 = 0x1 << 0
+    var pcbasketWalls : UInt32 = 0x1 << 2
     var colliderPc: UInt32 = 0x1 << 0
     var grid: Bool
     
     //MARK:- Init
-    init(positionData: BasketPositionData, pc: UInt32, colliderPc: UInt32, grid: Bool, zPosition: CGFloat, size: CGSize) {
-        self.pc = pc
+    init(positionData: BasketPositionData,
+         pcTop: UInt32,
+         pcbasketWalls: UInt32,
+         colliderPc: UInt32,
+         grid: Bool,
+         zPosition: CGFloat,
+         size: CGSize) {
+        self.pcTop = pcTop
+        self.pcbasketWalls = pcbasketWalls
         self.colliderPc = colliderPc
         self.grid = grid
         
-        front = SKSpriteNode(imageNamed: positionData.basketFrontImageName)
-        back = SKSpriteNode(imageNamed: positionData.basketBackImageName)
+        body = SKSpriteNode(imageNamed: positionData.basketFrontImageName)
+        top = SKSpriteNode(imageNamed: positionData.basketBackImageName)
         
         let texture = SKTexture(imageNamed: positionData.basketFrontImageName)
         super.init(texture: texture, color: .clear, size: size)
@@ -76,10 +84,10 @@ class Basket: SKSpriteNode {
     //MARK:- Setup
     private func setup() {
         
-        back.zPosition = self.zPosition
-        self.addChild(back)
+        top.zPosition = 0
+        self.addChild(top)
         
-        front.zPosition = self.zPosition
+        body.zPosition = self.zPosition
         //self.addChild(front)
         
         // Left Wall of the bin1
@@ -90,7 +98,7 @@ class Basket: SKSpriteNode {
         leftWall.alpha = grid ? 1 : 0
         
         leftWall.physicsBody = SKPhysicsBody(rectangleOf: leftWall.frame.size)
-        leftWall.physicsBody?.categoryBitMask = self.pc
+        leftWall.physicsBody?.categoryBitMask = self.pcbasketWalls
         leftWall.physicsBody?.collisionBitMask = self.colliderPc
         leftWall.physicsBody?.affectedByGravity = false
         leftWall.physicsBody?.isDynamic = false
@@ -105,7 +113,7 @@ class Basket: SKSpriteNode {
         rightWall.alpha = grid ? 1 : 0
         
         rightWall.physicsBody = SKPhysicsBody(rectangleOf: rightWall.frame.size)
-        rightWall.physicsBody?.categoryBitMask = self.pc
+        rightWall.physicsBody?.categoryBitMask = self.pcbasketWalls
         rightWall.physicsBody?.collisionBitMask = self.colliderPc
         rightWall.physicsBody?.affectedByGravity = false
         rightWall.physicsBody?.isDynamic = false
@@ -119,18 +127,20 @@ class Basket: SKSpriteNode {
         base.zPosition = 0
         base.alpha = grid ? 1 : 0
         base.physicsBody = SKPhysicsBody(rectangleOf: base.frame.size)
-        base.physicsBody?.categoryBitMask = self.pc
+        base.physicsBody?.categoryBitMask = self.pcTop
         base.physicsBody?.collisionBitMask = self.colliderPc
         base.physicsBody?.contactTestBitMask = self.colliderPc
         base.physicsBody?.affectedByGravity = false
         base.physicsBody?.isDynamic = false
-        self.addChild(base)
+        //self.addChild(base)
+        
+        top.physicsBody?.categoryBitMask = self.pcTop
     }
     
     //MARK:- Layout
     private func layout() {
-        back.size = self.size
-        back.position = self.position
+        top.size = self.size
+        top.position = self.position
         
         rightWall.position = CGPoint(x: self.position.x + self.frame.width / 2.5, y: self.position.y)
         base.position = CGPoint(x: self.position.x, y: self.position.y - self.frame.height / 4)
