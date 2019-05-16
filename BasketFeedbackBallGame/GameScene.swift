@@ -57,13 +57,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rightBasket: Basket?
     var finger: Finger?
     
-    var pi = Double.pi
-    var touchingBall = true
-    
-    
     var ball = SKShapeNode()
     var startG = SKShapeNode()  // Where the paper ball will start
+    var allSpriteNodes = [SKSpriteNode]()
     
+    var pi = Double.pi
+    var touchingBall = true
     var userInteractionAreEnabled = false
     
     let emojiView = EmojiView(frame: .zero)
@@ -77,7 +76,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return label
     }()
     
-    // Did Move To View - The GameViewController.swift has now displayed GameScene.swift and will instantly run this function.
+    //viewDidLoad
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         
@@ -94,6 +93,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupQuestionLabel()
         setupFinger()
         setupNotNowButton()
+        
+        allSpriteNodes = [middleBasket, finger, leftBasket, rightBasket, pBall, bg, transparentBorder, notNowBotton] as! [SKSpriteNode]
+        
         hideGameScene()
         fadeInGameScene()
         enableUserInterAction(after: 0.5)
@@ -116,11 +118,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupBorder() {
-        
         transparentBorder.color = SKColor(red: 0.0/255.0, green: 0.0/255.0, blue: 0.0/255.0, alpha: 0.6)
         transparentBorder.size.height = self.frame.height
         transparentBorder.size.width = self.frame.width
         transparentBorder.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
+        transparentBorder.zPosition = 0
         self.addChild(transparentBorder)
         
     }
@@ -134,7 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             pcbasketWalls: pc.basketWalls,
                             colliderPc: pc.ball,
                             grid: grids,
-                            zPosition: 1,
+                            zPosition: 4,
                             size: CGSize(width: width, height: height))
         
         middleBasket = Basket(positionData: BasketPositionData.mid,
@@ -142,7 +144,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                               pcbasketWalls: pc.basketWalls,
                               colliderPc: pc.ball,
                               grid: grids,
-                              zPosition: 1,
+                              zPosition: 4,
                               size: CGSize(width: width, height: height))
         
         rightBasket = Basket(positionData: BasketPositionData.right,
@@ -150,7 +152,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                              pcbasketWalls: pc.basketWalls,
                              colliderPc: pc.ball,
                              grid: grids,
-                             zPosition: 1,
+                             zPosition: 4,
                              size: CGSize(width: width, height: height))
     }
     
@@ -162,7 +164,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bg.size.height = self.frame.height * gameShrinkSize
         bg.size.width = self.frame.width * gameShrinkSize
         bg.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
-        bg.zPosition = 0
+        bg.zPosition = 1
         self.addChild(bg)
         
         
@@ -316,10 +318,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.run(SKAction.scale(by: 0.2, duration: c.airTime))
         
         // Change Collision Bitmask
-        let wait = SKAction.wait(forDuration: 1)
+        let wait = SKAction.wait(forDuration: 0.5)
         let changeCollision = SKAction.run({
             self.ball.physicsBody?.collisionBitMask = pc.basketWalls | pc.basketTop
-            self.ball.zPosition = 2
+            self.ball.zPosition = 3
         })
         
         self.run(SKAction.sequence([wait,changeCollision]))
@@ -343,40 +345,19 @@ extension GameScene {
     private func hideGameScene() {
         questionLabel.alpha = 0
         emojiView.alpha = 0
-        notNowBotton.alpha = 0
-        middleBasket?.alpha = 0
-        leftBasket?.alpha = 0
-        rightBasket?.alpha = 0
-        finger?.alpha = 0
-        pBall.alpha = 0
-        bg.alpha = 0
-        transparentBorder.alpha = 0
+        allSpriteNodes.forEach {$0.alpha = 0}
     }
     
     private func fadeInGameScene() {
         let fadeInAction = SKAction.fadeIn(withDuration: 0.5)
-        middleBasket?.run(fadeInAction)
-        leftBasket?.run(fadeInAction)
-        rightBasket?.run(fadeInAction)
-        finger?.run(fadeInAction)
-        pBall.run(fadeInAction)
-        bg.run(fadeInAction)
-        transparentBorder.run(fadeInAction)
-        notNowBotton.run(fadeInAction)
+        allSpriteNodes.forEach {$0.run(fadeInAction)}
         questionLabel.fadeIn()
         emojiView.fadeIn()
     }
     
     private func fadeOutGameScene() {
         let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
-        middleBasket?.run(fadeOutAction)
-        leftBasket?.run(fadeOutAction)
-        rightBasket?.run(fadeOutAction)
-        finger?.run(fadeOutAction)
-        pBall.run(fadeOutAction)
-        bg.run(fadeOutAction)
-        transparentBorder.run(fadeOutAction)
-        notNowBotton.run(fadeOutAction)
+        allSpriteNodes.forEach {$0.run(fadeOutAction)}
         questionLabel.fadeOut()
         emojiView.fadeOut()
     }

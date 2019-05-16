@@ -52,8 +52,6 @@ class Basket: SKSpriteNode {
     var colliderPc: UInt32 = 0x1 << 0
     var grid: Bool
     
-    var ballzPosAdterThrow = CGFloat(0)
-    
     //MARK:- Init
     init(positionData: BasketPositionData,
          pcTop: UInt32,
@@ -71,9 +69,8 @@ class Basket: SKSpriteNode {
         
         let texture = SKTexture(imageNamed: positionData.basketFrontImageName)
         super.init(texture: texture, color: .clear, size: size)
-        ballzPosAdterThrow = zPosition
-        self.zPosition = ballzPosAdterThrow + 1
         
+        self.zPosition = zPosition
         setup()
         layout()
     }
@@ -85,14 +82,14 @@ class Basket: SKSpriteNode {
     //MARK:- Setup
     private func setup() {
         
-        top.zPosition = ballzPosAdterThrow - 2
+        top.zPosition = -2
         self.addChild(top)
         
         // Left Wall of the bin1
         leftWall = SKShapeNode(rectOf: CGSize(width: 3, height: self.frame.height / 1.6))
         leftWall.fillColor = .red
         leftWall.strokeColor = .clear
-        leftWall.zPosition = ballzPosAdterThrow + 1
+        leftWall.zPosition = self.zPosition
         leftWall.alpha = grid ? 1 : 0
         
         leftWall.physicsBody = SKPhysicsBody(rectangleOf: leftWall.frame.size)
@@ -107,7 +104,7 @@ class Basket: SKSpriteNode {
         rightWall = SKShapeNode(rectOf: CGSize(width: 3, height: self.frame.height / 1.6))
         rightWall.fillColor = .red
         rightWall.strokeColor = .clear
-        rightWall.zPosition = ballzPosAdterThrow + 1
+        rightWall.zPosition = self.zPosition
         rightWall.alpha = grid ? 1 : 0
         
         rightWall.physicsBody = SKPhysicsBody(rectangleOf: rightWall.frame.size)
@@ -122,7 +119,7 @@ class Basket: SKSpriteNode {
         base = SKShapeNode(rectOf: CGSize(width: self.frame.width / 2, height: 3))
         base.fillColor = .red
         base.strokeColor = .clear
-        base.zPosition = ballzPosAdterThrow
+        base.zPosition = self.zPosition
         base.alpha = grid ? 1 : 0
         base.physicsBody = SKPhysicsBody(rectangleOf: base.frame.size)
         base.physicsBody?.categoryBitMask = self.pcTop
