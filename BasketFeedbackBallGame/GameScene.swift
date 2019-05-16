@@ -44,8 +44,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameShrinkSize = CGFloat(0.7)
     
     lazy var basketY = (self.frame.height / 2.4)
-    lazy var ballSize = (self.view!.frame.width / 8.3)
-    lazy var trowVelocity = (self.frame.height / 4)
+    lazy var ballSize = (self.view!.frame.width / 8)
+    lazy var trowVelocity = CGFloat(100.0)
     
     var transparentBorder = SKSpriteNode()
     var bg = SKSpriteNode(imageNamed: "background")            // background image
@@ -284,7 +284,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let xChange = t.end.x - t.start.x
         let angle = (atan(xChange / CGFloat((t.end.y - t.start.y))) * 180 / CGFloat(pi))
-        let amendedX = (tan(angle * CGFloat(pi) / CGFloat(180)) * c.yVel) * 0.5
+        let amendedX = (tan(angle * CGFloat(pi) / CGFloat(180)) * 45) * 0.5
         
         // Throw it!
         let throwVec = CGVector(dx: amendedX, dy: c.yVel)
