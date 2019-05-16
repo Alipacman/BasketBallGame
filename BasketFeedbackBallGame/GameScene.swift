@@ -50,6 +50,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var transparentBorder = SKSpriteNode()
     var bg = SKSpriteNode(imageNamed: "background")            // background image
     var pBall = SKSpriteNode(imageNamed: "basketball")  // Paper Ball skin
+    var notNowBotton = SKSpriteNode(imageNamed: "NotNowButton")
     
     var leftBasket: Basket?
     var middleBasket: Basket?
@@ -92,12 +93,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupEmojiView()
         setupQuestionLabel()
         setupFinger()
+        setupNotNowButton()
         hideGameScene()
         fadeInGameScene()
         enableUserInterAction(after: 0.5)
     }
     
     //MARK:- Setup
+    private func setupNotNowButton() {
+        notNowBotton.name = "btn"
+        notNowBotton.size.height = 60
+        notNowBotton.size.width = bg.frame.width
+        notNowBotton.position = CGPoint(x: self.frame.width / 2, y: 70)
+        self.addChild(notNowBotton)
+    }
+    
     private func setupFinger() {
         let position = CGPoint(x: 350, y: 180)
         finger = Finger(position: position, size: CGSize(width: 320, height: 55))
@@ -239,6 +249,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for touch in touches {
                 let location = touch.location(in: self)
                 if GameState.current == .playing {
+                    
+                    let positionInScene = touch.location(in: self)
+                    let touchedNode = self.atPoint(positionInScene)
+                    
+                    if let name = touchedNode.name {
+                        if name == "btn" {
+                            GameState.current = .menu
+                            self.fadeOutGameScene()
+                        }
+                    }
+                    
                     finger?.fadeOut()
                     if ball.contains(location){
                         t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
@@ -319,6 +340,9 @@ extension GameScene {
     }
     
     private func hideGameScene() {
+        questionLabel.alpha = 0
+        emojiView.alpha = 0
+        notNowBotton.alpha = 0
         middleBasket?.alpha = 0
         leftBasket?.alpha = 0
         rightBasket?.alpha = 0
@@ -337,6 +361,9 @@ extension GameScene {
         pBall.run(fadeInAction)
         bg.run(fadeInAction)
         transparentBorder.run(fadeInAction)
+        notNowBotton.run(fadeInAction)
+        questionLabel.fadeIn()
+        emojiView.fadeIn()
     }
     
     private func fadeOutGameScene() {
@@ -348,5 +375,24 @@ extension GameScene {
         pBall.run(fadeOutAction)
         bg.run(fadeOutAction)
         transparentBorder.run(fadeOutAction)
+        notNowBotton.run(fadeOutAction)
+        questionLabel.fadeOut()
+        emojiView.fadeOut()
+    }
+}
+
+extension UIView {
+    
+    func fadeIn(){
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIView.AnimationOptions.curveEaseIn, animations: {
+            self.alpha = 1.0
+        }, completion: nil)
+    }
+    
+    
+    func fadeOut(){
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIView.AnimationOptions.curveEaseOut, animations: {
+            self.alpha = 0.0
+        }, completion: nil)
     }
 }
