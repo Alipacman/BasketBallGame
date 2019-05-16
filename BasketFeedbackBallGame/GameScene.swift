@@ -279,6 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     setAccordingBasketAsEndPoint(with: location)
                     touchingBall = false
                     fire()
+                    fadeOut(node: ball, withDuration: 0.3, withDelay: 1.2)
                 }
             }
         }
@@ -378,6 +379,13 @@ extension GameScene {
         notNowBotton.run(fadeOutAction)
         questionLabel.fadeOut()
         emojiView.fadeOut()
+    }
+    
+    private func fadeOut(node: SKNode, withDuration duration: Double, withDelay delay: Double) {
+        let fadeOutAction = SKAction.fadeOut(withDuration: duration)
+        let delay = SKAction.wait(forDuration: delay)
+        
+        node.run(SKAction.sequence([delay,fadeOutAction]))
     }
 }
 
