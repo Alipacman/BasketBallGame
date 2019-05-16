@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D657C4A32288AF980082ABE6 /* Finger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D657C4A22288AF980082ABE6 /* Finger.swift */; };
 		D66DA8012275F528004808AB /* Basket.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66DA8002275F528004808AB /* Basket.swift */; };
 		D6A3EBD9227A0289009A5F60 /* EmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A3EBD8227A0289009A5F60 /* EmojiView.swift */; };
 		D6BCFC9F22650502000E4702 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BCFC9E22650502000E4702 /* GameScene.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D657C4A22288AF980082ABE6 /* Finger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Finger.swift; sourceTree = "<group>"; };
 		D66DA8002275F528004808AB /* Basket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Basket.swift; sourceTree = "<group>"; };
 		D6A3EBD8227A0289009A5F60 /* EmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiView.swift; sourceTree = "<group>"; };
 		D6BCFC9E22650502000E4702 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				D66DA8002275F528004808AB /* Basket.swift */,
+				D657C4A22288AF980082ABE6 /* Finger.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				D66DA8012275F528004808AB /* Basket.swift in Sources */,
 				D6BF27672261FCB200EBB8EF /* GameViewController.swift in Sources */,
 				D6BF275F2261FCB200EBB8EF /* AppDelegate.swift in Sources */,
+				D657C4A32288AF980082ABE6 /* Finger.swift in Sources */,
 				D6A3EBD9227A0289009A5F60 /* EmojiView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -54,9 +54,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var leftBasket: Basket?
     var middleBasket: Basket?
     var rightBasket: Basket?
+    var finger: Finger?
     
     var pi = Double.pi
     var touchingBall = true
+    
     
     var ball = SKShapeNode()
     var startG = SKShapeNode()  // Where the paper ball will start
@@ -89,10 +91,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupBall()
         setupEmojiView()
         setupQuestionLabel()
-        enableUserInterAction(after: 5)
+        setupFinger()
+        enableUserInterAction(after: 0.5)
     }
     
     //MARK:- Setup
+    private func setupFinger() {
+        let position = CGPoint(x: 350, y: 180)
+        finger = Finger(position: position, size: CGSize(width: 320, height: 55))
+        self.addChild(finger!)
+        finger?.rotate()
+    }
+    
     private func setupBorder() {
         
         transparentBorder.color = SKColor(red: 0.0/255.0, green: 0.0/255.0, blue: 0.0/255.0, alpha: 0.6)
@@ -227,6 +237,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for touch in touches {
                 let location = touch.location(in: self)
                 if GameState.current == .playing {
+                    finger?.fadeOut()
                     if ball.contains(location){
                         t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
                         touchingBall = true
@@ -299,8 +310,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 }
 
 extension GameScene {
-    private func enableUserInterAction(after seconds: Int) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(seconds), execute: {
+    private func enableUserInterAction(after seconds: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: {
             self.userInteractionAreEnabled = true
         })
     }
