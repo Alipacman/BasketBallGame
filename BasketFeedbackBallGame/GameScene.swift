@@ -92,6 +92,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupEmojiView()
         setupQuestionLabel()
         setupFinger()
+        hideGameScene()
+        fadeInGameScene()
         enableUserInterAction(after: 0.5)
     }
     
@@ -314,5 +316,37 @@ extension GameScene {
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: {
             self.userInteractionAreEnabled = true
         })
+    }
+    
+    private func hideGameScene() {
+        middleBasket?.alpha = 0
+        leftBasket?.alpha = 0
+        rightBasket?.alpha = 0
+        finger?.alpha = 0
+        pBall.alpha = 0
+        bg.alpha = 0
+        transparentBorder.alpha = 0
+    }
+    
+    private func fadeInGameScene() {
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.5)
+        middleBasket?.run(fadeInAction)
+        leftBasket?.run(fadeInAction)
+        rightBasket?.run(fadeInAction)
+        finger?.run(fadeInAction)
+        pBall.run(fadeInAction)
+        bg.run(fadeInAction)
+        transparentBorder.run(fadeInAction)
+    }
+    
+    private func fadeOutGameScene() {
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
+        middleBasket?.run(fadeOutAction)
+        leftBasket?.run(fadeOutAction)
+        rightBasket?.run(fadeOutAction)
+        finger?.run(fadeOutAction)
+        pBall.run(fadeOutAction)
+        bg.run(fadeOutAction)
+        transparentBorder.run(fadeOutAction)
     }
 }
