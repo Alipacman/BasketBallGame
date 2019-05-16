@@ -45,13 +45,14 @@ class Basket: SKSpriteNode {
     var rightWall = SKShapeNode()
     
     var base = SKShapeNode()
-    var body: SKSpriteNode
     var top: SKSpriteNode
     
     var pcTop: UInt32 = 0x1 << 0
     var pcbasketWalls : UInt32 = 0x1 << 2
     var colliderPc: UInt32 = 0x1 << 0
     var grid: Bool
+    
+    var ballzPosAdterThrow = CGFloat(0)
     
     //MARK:- Init
     init(positionData: BasketPositionData,
@@ -65,13 +66,13 @@ class Basket: SKSpriteNode {
         self.pcbasketWalls = pcbasketWalls
         self.colliderPc = colliderPc
         self.grid = grid
-        
-        body = SKSpriteNode(imageNamed: positionData.basketFrontImageName)
+
         top = SKSpriteNode(imageNamed: positionData.basketBackImageName)
         
         let texture = SKTexture(imageNamed: positionData.basketFrontImageName)
         super.init(texture: texture, color: .clear, size: size)
-        self.zPosition = zPosition
+        ballzPosAdterThrow = zPosition
+        self.zPosition = ballzPosAdterThrow + 1
         
         setup()
         layout()
@@ -84,17 +85,14 @@ class Basket: SKSpriteNode {
     //MARK:- Setup
     private func setup() {
         
-        top.zPosition = 0
+        top.zPosition = ballzPosAdterThrow - 2
         self.addChild(top)
-        
-        body.zPosition = self.zPosition
-        //self.addChild(front)
         
         // Left Wall of the bin1
         leftWall = SKShapeNode(rectOf: CGSize(width: 3, height: self.frame.height / 1.6))
         leftWall.fillColor = .red
         leftWall.strokeColor = .clear
-        leftWall.zPosition = zPosition
+        leftWall.zPosition = ballzPosAdterThrow + 1
         leftWall.alpha = grid ? 1 : 0
         
         leftWall.physicsBody = SKPhysicsBody(rectangleOf: leftWall.frame.size)
@@ -109,7 +107,7 @@ class Basket: SKSpriteNode {
         rightWall = SKShapeNode(rectOf: CGSize(width: 3, height: self.frame.height / 1.6))
         rightWall.fillColor = .red
         rightWall.strokeColor = .clear
-        rightWall.zPosition = zPosition
+        rightWall.zPosition = ballzPosAdterThrow + 1
         rightWall.alpha = grid ? 1 : 0
         
         rightWall.physicsBody = SKPhysicsBody(rectangleOf: rightWall.frame.size)
@@ -124,7 +122,7 @@ class Basket: SKSpriteNode {
         base = SKShapeNode(rectOf: CGSize(width: self.frame.width / 2, height: 3))
         base.fillColor = .red
         base.strokeColor = .clear
-        base.zPosition = 0
+        base.zPosition = ballzPosAdterThrow
         base.alpha = grid ? 1 : 0
         base.physicsBody = SKPhysicsBody(rectangleOf: base.frame.size)
         base.physicsBody?.categoryBitMask = self.pcTop

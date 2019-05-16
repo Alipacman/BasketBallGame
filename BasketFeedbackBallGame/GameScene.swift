@@ -134,7 +134,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             pcbasketWalls: pc.basketWalls,
                             colliderPc: pc.ball,
                             grid: grids,
-                            zPosition: 2,
+                            zPosition: 1,
                             size: CGSize(width: width, height: height))
         
         middleBasket = Basket(positionData: BasketPositionData.mid,
@@ -142,7 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                               pcbasketWalls: pc.basketWalls,
                               colliderPc: pc.ball,
                               grid: grids,
-                              zPosition: 2,
+                              zPosition: 1,
                               size: CGSize(width: width, height: height))
         
         rightBasket = Basket(positionData: BasketPositionData.right,
@@ -150,7 +150,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                              pcbasketWalls: pc.basketWalls,
                              colliderPc: pc.ball,
                              grid: grids,
-                             zPosition: 2,
+                             zPosition: 1,
                              size: CGSize(width: width, height: height))
     }
     
@@ -316,7 +316,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.run(SKAction.scale(by: 0.2, duration: c.airTime))
         
         // Change Collision Bitmask
-        let wait = SKAction.wait(forDuration: c.airTime / 2)
+        let wait = SKAction.wait(forDuration: 1)
         let changeCollision = SKAction.run({
             self.ball.physicsBody?.collisionBitMask = pc.basketWalls | pc.basketTop
             self.ball.zPosition = 2
