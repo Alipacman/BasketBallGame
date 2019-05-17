@@ -37,6 +37,8 @@ struct c {  // Constants
     static var airTime = TimeInterval() // Time the ball is in the air
 }
 
+let textViewPlaceHolderText = "If you want you can tell us more..."
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK:-Properties
@@ -66,6 +68,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var userInteractionAreEnabled = false
     
     let emojiView = EmojiView(frame: .zero)
+    
     let questionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -76,6 +79,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return label
     }()
     
+    let textView: UITextView = {
+        let textView = UITextView()
+        textView.layer.cornerRadius = 20
+        textView.text = textViewPlaceHolderText
+        textView.textColor = .lightGray
+        textView.font = UIFont(name: "PingFang HK", size: 18)
+        textView.textAlignment = .center
+        return textView
+    }()
+    
     //viewDidLoad
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
@@ -83,6 +96,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         c.grav = -6
         c.yVel = trowVelocity
         c.airTime = 1.5
+        
+        setupTextView()
         
         physicsWorld.gravity = CGVector(dx: 0, dy: c.grav)
         setupBorder()
@@ -245,6 +260,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         questionLabel.frame = CGRect(x: 8 + xOffset, y: self.frame.height / 6, width: width , height: height)
     }
     
+    private func setupTextView() {
+        let width = CGFloat(230)
+        let height = CGFloat(100)
+        let xOffset = self.frame.width * (1 - gameShrinkSize)/2
+        
+        textView.delegate = self
+        self.view?.addSubview(textView)
+        textView.frame = CGRect(x: xOffset + 15, y: self.frame.height / 2.8, width: width, height: height)
+    }
+    
     //MARK:- Touches
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if userInteractionAreEnabled {
@@ -327,11 +352,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.run(SKAction.sequence([wait,changeCollision]))
         
         // Wait & reset
-        let wait4 = SKAction.wait(forDuration: 2.5)
+        let wait4 = SKAction.wait(forDuration: 1.5)
         let reset = SKAction.run({
-            self.setupBall()
+            self.changeToSubmitUI()
         })
         self.run(SKAction.sequence([wait4,reset]))
+    }
+    
+    private func changeToSubmitUI() {
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
+        leftBasket?.run(fadeOutAction)
+        middleBasket?.run(fadeOutAction)
+        rightBasket?.run(fadeOutAction)
+        
+        questionLabel.text = "Thank you for your feedback!"
+        emojiView.fadeOut()
+        textView.fadeIn()
     }
 }
 
@@ -345,6 +381,7 @@ extension GameScene {
     private func hideGameScene() {
         questionLabel.alpha = 0
         emojiView.alpha = 0
+        textView.alpha = 0
         allSpriteNodes.forEach {$0.alpha = 0}
     }
     
@@ -358,6 +395,7 @@ extension GameScene {
     private func fadeOutGameScene() {
         let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
         allSpriteNodes.forEach {$0.run(fadeOutAction)}
+        textView.fadeOut()
         questionLabel.fadeOut()
         emojiView.fadeOut()
     }
@@ -370,8 +408,37 @@ extension GameScene {
     }
 }
 
-extension UIView {
+extension GameScene: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
     
+    func textViewDidBeginEditing(_ textView: UITextView)
+    {
+        if (textView.text == textViewPlaceHolderText && textView.textColor == .lightGray)
+        {
+            textView.text = ""
+            textView.textColor = .black
+        }
+        textView.becomeFirstResponder() //Optional
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView)
+    {
+        if (textView.text == "")
+        {
+            textView.text = textViewPlaceHolderText
+            textView.textColor = .lightGray
+        }
+        textView.resignFirstResponder()
+    }
+}
+
+extension UIView {
     func fadeIn(){
         UIView.animate(withDuration: 0.5, delay: 0.0, options: UIView.AnimationOptions.curveEaseIn, animations: {
             self.alpha = 1.0
