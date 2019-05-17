@@ -471,6 +471,9 @@ extension GameScene {
     }
     
     private func fadeOutGameScene() {
+        notNowEnabled = false
+        rethrowEnabled = false
+        
         let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
         allSpriteNodes.forEach {$0.run(fadeOutAction)}
         rethrowButton.run(fadeOutAction)

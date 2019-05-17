@@ -12,7 +12,6 @@
 		D6A3EBD9227A0289009A5F60 /* EmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A3EBD8227A0289009A5F60 /* EmojiView.swift */; };
 		D6BCFC9F22650502000E4702 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BCFC9E22650502000E4702 /* GameScene.swift */; };
 		D6BF275F2261FCB200EBB8EF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BF275E2261FCB200EBB8EF /* AppDelegate.swift */; };
-		D6BF27632261FCB200EBB8EF /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = D6BF27622261FCB200EBB8EF /* Actions.sks */; };
 		D6BF27672261FCB200EBB8EF /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BF27662261FCB200EBB8EF /* GameViewController.swift */; };
 		D6BF276A2261FCB200EBB8EF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6BF27682261FCB200EBB8EF /* Main.storyboard */; };
 		D6BF276C2261FCB300EBB8EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6BF276B2261FCB300EBB8EF /* Assets.xcassets */; };
@@ -38,7 +37,6 @@
 		D6BCFC9E22650502000E4702 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		D6BF275B2261FCB200EBB8EF /* BasketFeedbackBallGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasketFeedbackBallGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6BF275E2261FCB200EBB8EF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D6BF27622261FCB200EBB8EF /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		D6BF27662261FCB200EBB8EF /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		D6BF27692261FCB200EBB8EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D6BF276B2261FCB300EBB8EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,7 +102,6 @@
 				D6BCFC9E22650502000E4702 /* GameScene.swift */,
 				D6A3EBD8227A0289009A5F60 /* EmojiView.swift */,
 				D6BF27662261FCB200EBB8EF /* GameViewController.swift */,
-				D6BF27622261FCB200EBB8EF /* Actions.sks */,
 				D6BF276B2261FCB300EBB8EF /* Assets.xcassets */,
 				D6BF27682261FCB200EBB8EF /* Main.storyboard */,
 				D6BF276D2261FCB300EBB8EF /* LaunchScreen.storyboard */,
@@ -207,7 +204,6 @@
 				D6BF27852261FD3300EBB8EF /* GameScene.sks in Resources */,
 				D6BF276C2261FCB300EBB8EF /* Assets.xcassets in Resources */,
 				D6BF276F2261FCB300EBB8EF /* LaunchScreen.storyboard in Resources */,
-				D6BF27632261FCB200EBB8EF /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
