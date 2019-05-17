@@ -52,7 +52,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var transparentBorder = SKSpriteNode()
     var bg = SKSpriteNode(imageNamed: "background")            // background image
     var pBall = SKSpriteNode(imageNamed: "basketball")  // Paper Ball skin
+    
+    var notNowEnabled = true
+    var rethrowEnabled = false
     var notNowBotton = SKSpriteNode(imageNamed: "NotNowButton")
+    var rethrowButton = SKSpriteNode(imageNamed: "RethrowBlue")
+    var submitButton = SKSpriteNode(imageNamed: "SubmitPink")
+    var dismissButton = SKSpriteNode(imageNamed: "DismissPink")
     
     var leftBasket: Basket?
     var middleBasket: Basket?
@@ -64,7 +70,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var allSpriteNodes = [SKSpriteNode]()
     
     var pi = Double.pi
-    var touchingBall = true
+    var touchingBall = false
     var userInteractionAreEnabled = false
     
     let emojiView = EmojiView(frame: .zero)
@@ -74,8 +80,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .white
-        label.font = UIFont(name: "PingFang HK", size: 22)
-        label.text = "Do you like the design\n of the app?"
+        label.font = UIFont(name: "PingFang HK", size: 24)
+        label.text = "Do you like\n the design of the app?"
         return label
     }()
     
@@ -107,7 +113,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupEmojiView()
         setupQuestionLabel()
         setupFinger()
+        
         setupNotNowButton()
+        setupRethrowButton()
+        setupDismissButton()
+        setupSubmitButton()
         
         allSpriteNodes = [middleBasket, finger, leftBasket, rightBasket, pBall, bg, transparentBorder, notNowBotton] as! [SKSpriteNode]
         
@@ -118,11 +128,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK:- Setup
     private func setupNotNowButton() {
-        notNowBotton.name = "btn"
+        notNowBotton.name = "notNowButton"
         notNowBotton.size.height = 60
         notNowBotton.size.width = bg.frame.width
         notNowBotton.position = CGPoint(x: self.frame.width / 2, y: 70)
+        notNowBotton.zPosition = 5
         self.addChild(notNowBotton)
+    }
+    
+    private func setupDismissButton() {
+        dismissButton.name = "dissmissButton"
+        dismissButton.size.height = 47
+        dismissButton.size.width = textView.frame.width
+        dismissButton.position = CGPoint(x: self.frame.width / 2,  y: 260)
+        dismissButton.zPosition = 5
+        self.addChild(dismissButton)
+    }
+    
+    private func setupSubmitButton() {
+        let xOffset = self.frame.width/2
+        submitButton.name = "submitButton"
+        submitButton.size.height = 47
+        submitButton.size.width = textView.frame.width
+        submitButton.position = CGPoint(x: xOffset, y: 330)
+        submitButton.zPosition = 5
+        self.addChild(submitButton)
+    }
+    
+    private func setupRethrowButton() {
+        let xOffset = self.frame.width/2
+        rethrowButton.name = "rethrowButton"
+        rethrowButton.size.height = 60
+        rethrowButton.size.width = bg.frame.width
+        rethrowButton.position = CGPoint(x: xOffset, y: 70)
+        rethrowButton.zPosition = 5
+        self.addChild(rethrowButton)
     }
     
     private func setupFinger() {
@@ -215,6 +255,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Set up the ball. This will be called to reset the ball too
     func setupBall() {
         
+        ball.name = "ball"
+        pBall.name = "ball"
         // Remove and reset incase the ball was previously thrown
         pBall.removeFromParent()
         ball.removeFromParent()
@@ -279,18 +321,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                     let positionInScene = touch.location(in: self)
                     let touchedNode = self.atPoint(positionInScene)
+                    let justTheTip = (location.x > finger!.frame.minX && location.x < finger!.frame.minX + 60)
+                        && (location.y < (finger!.frame.minY + 100) && location.y > finger!.frame.minY)
                     
-                    if let name = touchedNode.name {
-                        if name == "btn" {
-                            GameState.current = .menu
-                            self.fadeOutGameScene()
+                    if justTheTip && touchedNode.name == nil {
+                        finger?.fadeOut()
+                        if ball.contains(location){
+                            t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
+                            touchingBall = true
                         }
-                    }
-                    
-                    finger?.fadeOut()
-                    if ball.contains(location){
-                        t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
-                        touchingBall = true
+                    } else {
+                        if let name = touchedNode.name {
+                            if (name == "notNowButton" && notNowEnabled) || name == "submitButton" || name == "dissmissButton" {
+                                self.fadeOutGameScene()
+                            }
+                            if name == "ball" {
+                                finger?.fadeOut()
+                                    t.start = CGPoint(x: self.frame.width / 2, y: startG.position.y + ball.frame.height)
+                                    touchingBall = true
+                            }
+                            if name == "rethrowButton" && rethrowEnabled {
+                                self.rethrowEnabled = false
+                                self.restartGame()
+                            }
+                        }
                     }
                 }
             }
@@ -302,12 +356,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if userInteractionAreEnabled {
             for touch in touches {
                 let location = touch.location(in: self)
-                if GameState.current == .playing && !ball.contains(location) && touchingBall{
+                if GameState.current == .playing && !ball.contains(location) && touchingBall {
                     setAccordingBasketAsEndPoint(with: location)
-                    touchingBall = false
                     fire()
                     fadeOut(node: ball, withDuration: 0.3, withDelay: 1.2)
                 }
+                touchingBall = false
             }
         }
     }
@@ -330,7 +384,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func fire() {
-        
+        rethrowEnabled = true
         let xChange = t.end.x - t.start.x
         let angle = (atan(xChange / CGFloat((t.end.y - t.start.y))) * 180 / CGFloat(pi))
         let amendedX = (tan(angle * CGFloat(pi) / CGFloat(180)) * 45) * 0.5
@@ -341,6 +395,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Shrink
         ball.run(SKAction.scale(by: 0.2, duration: c.airTime))
+        
+        self.notNowEnabled = false
         
         // Change Collision Bitmask
         let wait = SKAction.wait(forDuration: 0.5)
@@ -355,19 +411,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let wait4 = SKAction.wait(forDuration: 1.5)
         let reset = SKAction.run({
             self.changeToSubmitUI()
+            self.notNowEnabled = true
         })
         self.run(SKAction.sequence([wait4,reset]))
     }
     
     private func changeToSubmitUI() {
         let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.5)
+        
         leftBasket?.run(fadeOutAction)
         middleBasket?.run(fadeOutAction)
         rightBasket?.run(fadeOutAction)
+        notNowBotton.run(fadeOutAction)
+        
+        rethrowButton.run(fadeInAction)
+        dismissButton.run(fadeInAction)
+        submitButton.run(fadeInAction)
         
         questionLabel.text = "Thank you for your feedback!"
         emojiView.fadeOut()
         textView.fadeIn()
+    }
+    
+    private func restartGame() {
+        finger?.removeFromParent()
+        fadeOutGameScene()
+        fadeInGameScene()
+        setupBall()
+        setupFinger()
+        textView.text = textViewPlaceHolderText
+        textView.textColor = .lightGray
     }
 }
 
@@ -382,6 +456,10 @@ extension GameScene {
         questionLabel.alpha = 0
         emojiView.alpha = 0
         textView.alpha = 0
+        
+        rethrowButton.alpha = 0
+        dismissButton.alpha = 0
+        submitButton.alpha = 0
         allSpriteNodes.forEach {$0.alpha = 0}
     }
     
@@ -395,6 +473,10 @@ extension GameScene {
     private func fadeOutGameScene() {
         let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
         allSpriteNodes.forEach {$0.run(fadeOutAction)}
+        rethrowButton.run(fadeOutAction)
+        dismissButton.run(fadeOutAction)
+        submitButton.run(fadeOutAction)
+        finger?.fadeOut()
         textView.fadeOut()
         questionLabel.fadeOut()
         emojiView.fadeOut()
