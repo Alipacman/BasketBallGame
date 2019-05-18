@@ -10,34 +10,29 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
-class GameViewController: UIViewController {
-
-    override func viewDidLoad() {
+public class GameViewController: UIViewController {
+    
+    let frame = CGRect(x: 0, y: 0, width: 375, height: 812)
+    
+    let gameView = SKView(frame: CGRect(x: 0, y: 0, width: 375, height: 812))
+    
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
-        if let view = self.view as! SKView? {
-            // Load the SKScene from 'GameScene.sks'
-            if let scene = SKScene(fileNamed: "GameScene") {
-                // Set the scale mode to scale to fit the window
-                scene.scaleMode = .aspectFill
-                scene.size = self.view.bounds.size
-                // Present the scene
-                view.presentScene(scene)
-            }
-            
-            view.ignoresSiblingOrder = true
+        // Load the SKScene from 'GameScene.sks'
+        if let scene = SKScene(fileNamed: "GameScene") {
+            // Set the scale mode to scale to fit the window
+            scene.scaleMode = .aspectFill
+            scene.size = frame.size
+            // Present the scene
+            gameView.presentScene(scene)
         }
+        
+        gameView.ignoresSiblingOrder = true
+        //self.view.addSubview(gameView)
     }
-
-    override var shouldAutorotate: Bool {
-        return true
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-            return .portrait
-    }
-
-    override var prefersStatusBarHidden: Bool {
-        return true
+    
+    public func getGameView() -> UIView {
+        return gameView
     }
 }

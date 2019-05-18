@@ -81,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         label.textAlignment = .center
         label.textColor = .white
         label.font = UIFont(name: "PingFang HK", size: 24)
-        label.text = "Do you like\n the design of the app?"
+        label.text = "Do you like\n the design of\n the app?"
         return label
     }()
     
@@ -295,7 +295,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func setupQuestionLabel() {
         let width = ((self.view?.frame.width)! - 32) * gameShrinkSize
-        let height = CGFloat(100)
+        let height = CGFloat(150)
         let xOffset = self.frame.width * (1 - gameShrinkSize)/2
         
         self.view?.addSubview(questionLabel)
@@ -442,6 +442,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupFinger()
         textView.text = textViewPlaceHolderText
         textView.textColor = .lightGray
+        questionLabel.text = "Does the app\n run smooth?"
     }
 }
 
