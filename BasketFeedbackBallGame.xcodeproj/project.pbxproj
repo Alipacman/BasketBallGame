@@ -17,7 +17,6 @@
 		D6BF276C2261FCB300EBB8EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6BF276B2261FCB300EBB8EF /* Assets.xcassets */; };
 		D6BF276F2261FCB300EBB8EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6BF276D2261FCB300EBB8EF /* LaunchScreen.storyboard */; };
 		D6BF277A2261FCB400EBB8EF /* BasketFeedbackBallGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BF27792261FCB400EBB8EF /* BasketFeedbackBallGameTests.swift */; };
-		D6BF27852261FD3300EBB8EF /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D6BF27842261FD3300EBB8EF /* GameScene.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,7 +44,6 @@
 		D6BF27752261FCB400EBB8EF /* BasketFeedbackBallGameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BasketFeedbackBallGameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6BF27792261FCB400EBB8EF /* BasketFeedbackBallGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketFeedbackBallGameTests.swift; sourceTree = "<group>"; };
 		D6BF277B2261FCB400EBB8EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D6BF27842261FD3300EBB8EF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,13 +64,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D66DA7FF2275F500004808AB /* Model */ = {
+		D66DA7FF2275F500004808AB /* Code */ = {
 			isa = PBXGroup;
 			children = (
 				D66DA8002275F528004808AB /* Basket.swift */,
 				D657C4A22288AF980082ABE6 /* Finger.swift */,
+				D6BCFC9E22650502000E4702 /* GameScene.swift */,
+				D6A3EBD8227A0289009A5F60 /* EmojiView.swift */,
+				D6BF27662261FCB200EBB8EF /* GameViewController.swift */,
 			);
-			path = Model;
+			path = Code;
 			sourceTree = "<group>";
 		};
 		D6BF27522261FCB200EBB8EF = {
@@ -96,12 +97,8 @@
 		D6BF275D2261FCB200EBB8EF /* BasketFeedbackBallGame */ = {
 			isa = PBXGroup;
 			children = (
-				D66DA7FF2275F500004808AB /* Model */,
+				D66DA7FF2275F500004808AB /* Code */,
 				D6BF275E2261FCB200EBB8EF /* AppDelegate.swift */,
-				D6BF27842261FD3300EBB8EF /* GameScene.sks */,
-				D6BCFC9E22650502000E4702 /* GameScene.swift */,
-				D6A3EBD8227A0289009A5F60 /* EmojiView.swift */,
-				D6BF27662261FCB200EBB8EF /* GameViewController.swift */,
 				D6BF276B2261FCB300EBB8EF /* Assets.xcassets */,
 				D6BF27682261FCB200EBB8EF /* Main.storyboard */,
 				D6BF276D2261FCB300EBB8EF /* LaunchScreen.storyboard */,
@@ -201,7 +198,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6BF276A2261FCB200EBB8EF /* Main.storyboard in Resources */,
-				D6BF27852261FD3300EBB8EF /* GameScene.sks in Resources */,
 				D6BF276C2261FCB300EBB8EF /* Assets.xcassets in Resources */,
 				D6BF276F2261FCB300EBB8EF /* LaunchScreen.storyboard in Resources */,
 			);
